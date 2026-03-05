@@ -1,0 +1,18 @@
+[submodule "sources/coreyhaines31-marketingskills"]
+	path = sources/coreyhaines31-marketingskills
+	url = https://github.com/coreyhaines31/marketingskills.git
+[submodule "sources/anthropics-skills"]
+	path = sources/anthropics-skills
+	url = https://github.com/anthropics/skills.git
+[submodule "sources/inference-sh-9-skills"]
+	path = sources/inference-sh-9-skills
+	url = https://github.com/inference-sh-9/skills.git
+[submodule "sources/am-will-codex-skills"]
+	path = sources/am-will-codex-skills
+	url = https://github.com/am-will/codex-skills.git
+[submodule "sources/vercel-labs-skills"]
+	path = sources/vercel-labs-skills
+	url = https://github.com/vercel-labs/skills.git
+[submodule "sources/obra-superpowers"]
+	path = sources/obra-superpowers
+	url = https://github.com/obra/superpowers.git
