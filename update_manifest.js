@@ -5,10 +5,14 @@ const path = require('path');
 const rootDir = __dirname;
 const manifestPath = path.join(rootDir, 'skills-manifest.json');
 
-// Carpetas que no queremos escanear
-const ignoreDirs = ['.git', 'node_modules', '.github'];
+// 🎯 LISTA BLANCA: Solo se escanearán estas carpetas desde la raíz
+const allowedRootDirs = ['Performance', 'contenido', 'diseño', 'social_media'];
 
-function buildManifest(dirPath, manifest = {}) {
+// Función recursiva para escanear directorios
+function scanDirectory(dirPath, manifest = {}) {
+    // Si la carpeta no existe (por si hay un error de tipeo en la lista), la saltamos
+    if (!fs.existsSync(dirPath)) return manifest;
+
     const files = fs.readdirSync(dirPath);
 
     files.forEach(file => {
@@ -16,15 +20,13 @@ function buildManifest(dirPath, manifest = {}) {
         const stat = fs.statSync(fullPath);
 
         if (stat.isDirectory()) {
-            if (!ignoreDirs.includes(file)) {
-                // Si es un directorio y no está en la lista de ignorados, entrar a escanearlo
-                buildManifest(fullPath, manifest);
-            }
+            // Entrar recursivamente a las subcarpetas sin restricciones
+            scanDirectory(fullPath, manifest);
         } else if (stat.isFile() && file.endsWith('.md')) {
             // Si es un archivo Markdown, obtener su nombre sin extensión
             const skillName = path.basename(file, '.md');
             
-            // Crear la ruta relativa desde la raíz y cambiar barras invertidas (Windows) a barras normales
+            // Crear la ruta relativa desde la raíz y cambiar barras invertidas a normales
             const relativePath = path.relative(rootDir, fullPath).replace(/\\/g, '/');
             
             // Agregar al manifest
@@ -35,10 +37,15 @@ function buildManifest(dirPath, manifest = {}) {
     return manifest;
 }
 
-// Ejecutar la función
-const manifestData = buildManifest(rootDir);
+const manifestData = {};
 
-// Escribir el resultado en el archivo skills-manifest.json
+// Iniciar el escaneo SOLO en las carpetas permitidas
+allowedRootDirs.forEach(folder => {
+    const folderPath = path.join(rootDir, folder);
+    scanDirectory(folderPath, manifestData);
+});
+
+// Escribir el resultado final en el archivo skills-manifest.json
 fs.writeFileSync(manifestPath, JSON.stringify(manifestData, null, 2), 'utf-8');
 
-console.log(`✅ ¡Éxito! Manifest actualizado con ${Object.keys(manifestData).length} skills.`);
+console.log(`✅ ¡Éxito! Manifest actualizado. Se extrajeron ${Object.keys(manifestData).length} skills de las carpetas especificadas.`);
