@@ -3,8 +3,12 @@ name: Actualizar Skills Manifest
 on:
   push:
     paths:
-      - '**/*.md' # Se ejecuta automáticamente al modificar o subir Markdowns
-  workflow_dispatch: # Agregamos esto para que también puedas ejecutarlo manualmente desde GitHub si quieres
+      - '**/*.md'
+  workflow_dispatch:
+
+# 🎯 Agregamos esta variable para forzar el uso de Node 24 en las acciones de GitHub
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   update-manifest:
@@ -19,7 +23,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Usamos una versión estable de Node
+          node-version: '24'
 
       - name: Ejecutar Script de actualización
         run: node update_manifest.js
